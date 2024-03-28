@@ -3,9 +3,8 @@
 <%@ page import="java.net.*"%>
 <%
 	System.out.println("==========addDiaryForm.jsp==========");
-// 0. 로그인(인증) 분기
-// diary.login.my_session => 'OFF' => redirect("loginForm.jsp")
 
+    // 인증 우회 처리
 	String sql1 = "select my_session mySession from login";
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = null;
@@ -19,7 +18,7 @@
 	if(rs1.next()) {
 		mySession = rs1.getString("mySession");
 	}
-	// diary.login.my_session => 'OFF' => redirect("loginForm.jsp")
+	// 로그인 off 시 diary.jsp로 가기
 	if(mySession.equals("OFF")) {
 		response.sendRedirect("/diary/diary.jsp");
 		return; // 코드 진행을 끝내는 문법 ex) 메서드 끝낼때 return사용
@@ -100,6 +99,12 @@
         left : 5px;
     }
     
+    .ab-r{
+        position: absolute;
+        top: 5px;
+        right : 5px;
+    }
+    
     .homeBtn{
 		background: url("./img/home1.png") no-repeat center;
 		background-size: 100%;
@@ -175,15 +180,36 @@
         height: 50px;
         cursor: pointer;
     }
+    .voteBtn{
+        background: url("./img/vote1.png") no-repeat center;
+        background-size: 100%;
+        background-color: transparent;
+        border: none;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+    }
+    .voteBtn:hover{
+        background: url("./img/vote2.png") no-repeat center;
+        background-size: 100%;
+        background-color: transparent;
+        border: none;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+    }
 </style>
 <body class="nanum-myeongjo-regular">
 
-<div class="ab">
-    <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
-    <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
-    <button type="button" class="listBtn" onclick="location.href='/diary/diaryList.jsp'"></button>
-    <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
-</div>
+    <div class="ab">
+        <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
+        <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
+        <button type="button" class="listBtn" onclick="location.href='/diary/diaryList.jsp'"></button>
+        <button type="button" class="voteBtn" onclick="location.href='/diary/voteForm.jsp'"></button>
+    </div>
+    <div class="ab-r">
+        <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
+    </div>
     
 	<div class="diaryBg px-5 ">
 	<!-- 메인 시작 -->	

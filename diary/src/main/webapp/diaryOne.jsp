@@ -106,6 +106,12 @@
         left : 5px;
     }
     
+    .ab-r{
+        position: absolute;
+        top: 5px;
+        right : 5px;
+    }
+    
     .homeBtn{
 		background: url("./img/home1.png") no-repeat center;
 		background-size: 100%;
@@ -221,16 +227,37 @@
         height: 100px;
         cursor: pointer;
     }
+    .voteBtn{
+        background: url("./img/vote1.png") no-repeat center;
+        background-size: 100%;
+        background-color: transparent;
+        border: none;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+    }
+    .voteBtn:hover{
+        background: url("./img/vote2.png") no-repeat center;
+        background-size: 100%;
+        background-color: transparent;
+        border: none;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+    }
 
 </style>
 <body class="nanum-myeongjo-regular">
 
-<div class="ab">
-    <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
-    <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
-    <button type="button" class="listBtn" onclick="location.href='/diary/diaryList.jsp'"></button>
-    <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
-</div>
+    <div class="ab">
+        <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
+        <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
+        <button type="button" class="listBtn" onclick="location.href='/diary/diaryList.jsp'"></button>
+        <button type="button" class="voteBtn" onclick="location.href='/diary/voteForm.jsp'"></button>
+    </div>
+    <div class="ab-r">
+        <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
+    </div>
     
     
     <div class="diaryBg px-5 ">

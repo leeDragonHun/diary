@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*"%>
-<%@ page import="java.net.*"%>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.net.*" %>
 <%
-	// 0. 로그인(인증) 분기
-	// diary.login.my_session => 'OFF' => redirect("loginForm.jsp")
+    System.out.println("==========statsLunch.jsp==========");
 	
 	String sql1 = "select my_session mySession from login";
 	Class.forName("org.mariadb.jdbc.Driver");
@@ -25,65 +24,25 @@
 		return; // 코드 진행을 끝내는 문법 ex) 메서드 끝낼때 return사용
 	}
 %>	
+
 <%
-	// 출력 리스트 모듈
-	int currentPage = 1;
-    System.out.println("currentPage : " + currentPage);
-	if(request.getParameter("currentPage") != null) {
-		currentPage = Integer.parseInt(request.getParameter("currentPage"));
-	}
-	int rowPerPage = 10;
 	/*
-	if(request.getParameter("rowPerPage") != null) {
-		rowPerPage = Integer.parseInt(request.getParameter("rowPerPage"));
-	}
+	SELECT menu,COUNT(*) 
+	FROM lunch
+	GROUP BY menu
+	ORDER BY COUNT(*) DESC;
 	*/
-	
-	int startRow = (currentPage-1)*rowPerPage; // 1-0, 2-10, 3-20, 4-30,....
-	
-	String searchWord = "";
-	if(request.getParameter("searchWord") != null) {
-		searchWord = request.getParameter("searchWord");
-	}
-	/*
-		select diary_date diaryDate, title
-		from diary
-		where title like ?
-		order by diary_date desc
-		limit ?, ?
-	*/
-	String sql2 = "select diary_date diaryDate, title from diary where title like ? order by diary_date desc limit ?, ?";
+	String sql2 = "select menu, count(*) cnt from lunch group by menu";
 	PreparedStatement stmt2 = null;
 	ResultSet rs2 = null;
 	stmt2 = conn.prepareStatement(sql2);
-	stmt2.setString(1, "%"+searchWord+"%");
-	stmt2.setInt(2, startRow);
-	stmt2.setInt(3, rowPerPage);
 	rs2 = stmt2.executeQuery();
-%>
-
-<%
-	// lastPage 모듈
-	String sql3 = "select count(*) cnt from diary where title like ?";
-	PreparedStatement stmt3 = null;
-	ResultSet rs3 = null;
-	stmt3 = conn.prepareStatement(sql3);
-	stmt3.setString(1, "%"+searchWord+"%");
-	rs3 = stmt3.executeQuery();
-	int totalRow = 0;
-	if(rs3.next()) {
-		totalRow = rs3.getInt("cnt");
-	}
-	int lastPage = totalRow / rowPerPage;
-	if(totalRow % rowPerPage != 0) {
-		lastPage = lastPage + 1;
-	}
 %>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title></title>
+	<title>식사 메뉴 통계</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,6 +50,86 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Nanum+Myeongjo&display=swap" rel="stylesheet">
 </head>
 <style>
+    a{ text-decoration: none; color: black; }
+
+	.nanum-myeongjo-regular {
+	 	font-family: "Nanum Myeongjo", serif;
+		font-weight: 400;
+		font-style: normal;
+	}
+	
+	.diaryBg {
+		background: url("./img/bg4.jpg");
+		background-size: cover;
+        background-position: center;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+	}
+	
+	.loginBtn{
+		background: url("./img/closermv.png") no-repeat center;
+		background-size: cover;
+		background-color: transparent;
+        border: none;
+        width: 60px;
+        height: 85px;
+        cursor: pointer;
+	}
+
+	.loginBtn:hover{
+		background: url("./img/openrmv.png") no-repeat center;
+		background-size: cover;
+		background-color: transparent;
+        border: none;
+        width: 60px;
+        height: 85px;
+        cursor: pointer;
+	}
+	
+	.addDiaryBtn{
+		background: url("./img/book2.png") no-repeat center;
+		background-size: 100%;
+		background-color: transparent;
+        border: none;
+        width: 100px;
+        height: 75px;
+        cursor: pointer;
+	}
+	
+	.addDiaryBtn:hover{
+		background: url("./img/book1.png") no-repeat center;
+		background-size: 100%;
+		background-color: transparent;
+        border: none;
+        width: 100px;
+        height: 75px;
+        cursor: pointer;
+	}
+	
+	.logoutBtn{
+		background: url("./img/exit1.png") no-repeat center;
+		background-size: 100%;
+		background-color: transparent;
+        border: none;
+        width: 100px;
+        height: 75px;
+        cursor: pointer;
+	}
+	
+	.logoutBtn:hover{
+		background: url("./img/exit2.png") no-repeat center;
+		background-size: 100%;
+		background-color: transparent;
+        border: none;
+        width: 100px;
+        height: 75px;
+        cursor: pointer;
+	}
+
     .ab{
         position: absolute;
         top: 5px;
@@ -103,29 +142,6 @@
         right : 5px;
     }
     
-    .nanum-myeongjo-regular {
-        font-family: "Nanum Myeongjo", serif; 
-        font-weight: 400; 
-        font-style: normal; 
-    }
-    
-    .diaryBg {
-        background: url("./img/bg4.jpg");
-        background-size: cover;
-        background-position: center;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        }
-    
-    a{ text-decoration: none; color: black; }
-    
-    .bgNo{
-        background-color:transparent;
-    }
-
     .homeBtn{
 		background: url("./img/home1.png") no-repeat center;
 		background-size: 100%;
@@ -201,46 +217,27 @@
         height: 50px;
         cursor: pointer;
     }
-    .sear{
-        background: url("./img/sear.png") no-repeat center;
-        background-size: 100%;
-        background-color: transparent;
-        border: none;
-        width: 30px;
-        height: 25px;
-        cursor: pointer;
-    }
-    .re1{
-        background: url("./img/re1.png") no-repeat center;
-        background-size: 100%;
-        background-color: transparent;
-        border: none;
-        width: 30px;
-        height: 25px;
-        cursor: pointer;
-    }
     .voteBtn{
-        background: url("./img/vote1.png") no-repeat center;
-        background-size: 100%;
-        background-color: transparent;
+		background: url("./img/vote1.png") no-repeat center;
+		background-size: 100%;
+		background-color: transparent;
         border: none;
         width: 50px;
         height: 50px;
         cursor: pointer;
     }
     .voteBtn:hover{
-        background: url("./img/vote2.png") no-repeat center;
-        background-size: 100%;
-        background-color: transparent;
+		background: url("./img/vote2.png") no-repeat center;
+		background-size: 100%;
+		background-color: transparent;
         border: none;
         width: 50px;
         height: 50px;
         cursor: pointer;
     }
-    
+
 </style>
 <body class="nanum-myeongjo-regular">
-
 <div class="ab">
     <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
     <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
@@ -250,51 +247,61 @@
 <div class="ab-r">
     <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
 </div>
-
 <div class="diaryBg px-5 ">
-	<h1>버린 것들</h1>
-    <hr>
-	<table class="bgNo">
-		<tr>
-			<th style="width: 200px;">날짜</th>
-			<th>제목</th>
-		</tr>
-		<%
-			while(rs2.next()) {
-		%>
-				<tr>
-					<td><a href="/diary/diaryOne.jsp?diaryDate=<%=rs2.getString("diaryDate") %>"><%=rs2.getString("diaryDate")%></a></td>
-					<td><a href="/diary/diaryOne.jsp?diaryDate=<%=rs2.getString("diaryDate") %>"><%=rs2.getString("title")%></a></td>
-				</tr>
-		<%		
-			}
-		%>
-	</table>
+	<h1>식사 메뉴 통계</h1>
 	
-	<div>
-    <br>
-    <%
-        if(currentPage == 1){
-    %>        
-		<a>이전</a>
-		<a href="/diary/diaryList.jsp?currentPage=<%=currentPage+1%>">다음</a>
-    <%
-        } else if (currentPage == lastPage){
-    %>
-		<a href="/diary/diaryList.jsp?currentPage=<%=currentPage-1%>">이전</a>
-		<a>다음</a>
-    <%        
-        }
-    %>
+	<%
+				double maxHeight = 1000; // 차트의 최대 높이
+				double totalCnt = 0; // 총투표 수 선언
+				while(rs2.next()) { // sql2를 끝까지 반복
+					totalCnt = totalCnt + rs2.getInt("cnt"); // 총투표수를 구하는 식
+				}
+				
+				rs2.beforeFirst();
+				// rs2.next를 한 번이라도 사용하면 ResultSet의 위치는 다음으로 넘어간다.
+		        // rs2.next가 1~10이라면 2에서 구해지면 3으로 넘어가는데 그러지 않고 ResultSet의 처음위치로 돌아감.
+		    %>
+	<div class="fw-bold">
+		전체 투표수 : <%=(int)totalCnt%>
 	</div>
-    <br>
-	<form method="get" action="/diary/diaryList.jsp">
-		<div>
-            <input type="text" name="searchWord" style="background-color: transparent; border: none;" placeholder="제목을 검색하세요.">
-			<button class="sear" type="submit"></button>
-            <button class="re1" type="button" class="" onclick="location.href='/diary/diaryList.jsp'"></button>
-		</div>
-	</form>
-</div>    
+	<table  style="width: 500px;">
+		<tr>
+			<%	
+			// c라는 배열을 만들고 색상값 넣기(나중에 menu 요소들의 색을 정해주기 위함 대신  i를 만들고 증가식 해주기)
+				String[] c = {"#ABDEE6", "#CBAACB", "#FFFFB5", "#FFCCB6", "#F3B0C3"};
+				int i = 0;
+				while(rs2.next()) {
+					// 요소 별 높이를 정하는 것임
+                    // 내가정한 차트의 높이(maxHeight)에 그menu의 투표수 / 총 투표수 를 하면 전체대비 % 높이값으로 된다.
+					int h = (int)(maxHeight * (rs2.getInt("cnt")/totalCnt));
+			%>
+					<td style="vertical-align: bottom;"><!-- 자식 div를 아래정렬로 -->
+						<div style="height: <%=h%>px; 
+									background-color:<%=c[i]%>;
+									text-align: center"
+                                    class="fw-bold m-3"
+                                    ><!-- menu요소의 차트의 높이를 h로, 색상은 c배열의 값순서대로, 텍스트의 정렬은 가운데정렬  -->
+							<%=rs2.getInt("cnt")%>
+						</div>
+					</td>
+			<%		
+					i = i+1; // 요소별로 배열에 있는 색상값 다르게 주기 위함.
+				}
+			%>
+		</tr>
+		<tr style="text-align: center" class="fw-bold">
+			<%
+				// 커스의 위치를 다시 처음으로
+				rs2.beforeFirst();
+							
+				while(rs2.next()) {
+			%>
+					<td><%=rs2.getString("menu")%></td>
+			<%		
+				}
+			%>
+		</tr>
+	</table>
+</div>
 </body>
 </html>

@@ -125,6 +125,12 @@
         left : 5px;
     }
     
+    .ab-r{
+        position: absolute;
+        top: 5px;
+        right : 5px;
+    }
+    
     .homeBtn{
 		background: url("./img/home1.png") no-repeat center;
 		background-size: 100%;
@@ -200,22 +206,38 @@
         height: 50px;
         cursor: pointer;
     }
-
+    .voteBtn{
+		background: url("./img/vote1.png") no-repeat center;
+		background-size: 100%;
+		background-color: transparent;
+        border: none;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+    }
+    .voteBtn:hover{
+		background: url("./img/vote2.png") no-repeat center;
+		background-size: 100%;
+		background-color: transparent;
+        border: none;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+    }
 </style>
 <body class="nanum-myeongjo-regular">
-
-
 <%
 	if(mySession.equals("OFF")){ // off 상태일 때의 html
 %>
-            <div class="abc">
-    		    <div class="ab">
-                    <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
-                    <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
-                    <button type="button" class="listBtn" onclick="location.href='/diary/diaryList.jsp'"></button>
-                    <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
-                    로그인상태 : <%=mySession %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;최근접속 : <%=onDate %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;최근종료 : <%=offDate %>
-                </div>
+            <div class="ab">
+                <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
+                <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
+                <button type="button" class="listBtn" onclick="location.href='/diary/diaryList.jsp'"></button>
+                <button type="button" class="voteBtn" onclick="location.href='/diary/voteForm.jsp'"></button>
+                로그인상태 : <%=mySession %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;최근접속 : <%=onDate %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;최근종료 : <%=offDate %>
+            </div>
+            <div class="ab-r">
+                <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
             </div>
 		    <!-- 본문 시작  -->
 		    <div class="diaryBg p-5">
@@ -261,12 +283,15 @@
 		return;
 	} 	else if(mySession.equals("ON")){ // ON 상태일 때의 html
 %>
-		    <div class="ab">
+            <div class="ab">
                 <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
                 <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
                 <button type="button" class="listBtn" onclick="location.href='/diary/diaryList.jsp'"></button>
-                <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
+                <button type="button" class="voteBtn" onclick="location.href='/diary/voteForm.jsp'"></button>
                 로그인상태 : <%=mySession %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;최근접속 : <%=onDate %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;최근종료 : <%=offDate %>
+            </div>
+            <div class="ab-r">
+                <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
             </div>
 			    <!-- 본문 시작  -->
 			    <div class="diaryBg p-5">
