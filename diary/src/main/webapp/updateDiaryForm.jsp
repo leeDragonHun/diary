@@ -4,28 +4,17 @@
 <%
 	System.out.println("==========updateDiaryForm.jsp==========");
 
-    // 인증 우회 처리
-	String sql1 = "select my_session mySession from login";
+
+    String loginMember = (String)(session.getAttribute("loginMember"));
+    if(loginMember == null){ // 즉, 로그오프 상태면.
+        response.sendRedirect("/diary/diary.jsp");
+        return; 
+    }
+
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = null;
-	PreparedStatement stmt1 = null;
-	ResultSet rs1 = null;
-	conn = DriverManager.getConnection(
-			"jdbc:mariadb://127.0.0.1:3306/diary", "root", "java1234");
-	stmt1 = conn.prepareStatement(sql1);
-	rs1 = stmt1.executeQuery();
-	String mySession = null;
-	if(rs1.next()) {
-		mySession = rs1.getString("mySession");
-	}
-	// diary.login.my_session => 'OFF' => redirect("loginForm.jsp")
-	if(mySession.equals("OFF")) {
-		response.sendRedirect("/diary/diary.jsp");
-		return;
-	}
-%>
+	conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "java1234");
 
-<%
 	String diaryDate = request.getParameter("diaryDate");
 	String title = request.getParameter("title");
 	String weather = request.getParameter("weather");
@@ -247,3 +236,7 @@
 	</div>
 </body>
 </html>
+<%
+    // 자원반납
+    conn.close();
+%>

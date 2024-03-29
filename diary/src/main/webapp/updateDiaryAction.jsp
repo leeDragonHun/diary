@@ -2,6 +2,13 @@
 <%@ page import = "java.sql.*" %>
 <%
     System.out.println("==========updateDiaryAction.jsp==========");
+
+
+    String loginMember = (String)(session.getAttribute("loginMember"));
+    if(loginMember == null){ // 즉, 로그오프 상태면.
+        response.sendRedirect("/diary/diary.jsp");
+        return; 
+    }
     
     // 인코딩(utf-8)
     request.setCharacterEncoding("UTF-8");
@@ -19,33 +26,13 @@
 	System.out.println("content : " + content);
     
 
-	// 인증 우회 쿼리
-	String sql1 = "select my_session mySession from login"; // 알리어스 별칭 사용
 	
 	// DB 연동
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = null;
-	PreparedStatement stmt1 = null;
-	ResultSet rs1 = null;
 	conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "java1234");
 
-	// DB 사용 준비
-	stmt1 = conn.prepareStatement(sql1);
-	rs1 = stmt1.executeQuery();
-	
-	String mySession = null;
-	if(rs1.next()){
-		mySession = rs1.getString("mySession");
-	}
-    
-	//로그인 인증 우회 처리 실행
-	if(mySession.equals("OFF")) {
-		response.sendRedirect("/diary/diary.jsp");
-		return;
-	}
-%>
-<%
-    String sql2 = "UPDATE diary SET title = ?, weather =?, content = ? WHERE diary_date = ?";
+	String sql2 = "UPDATE diary SET title = ?, weather =?, content = ? WHERE diary_date = ?";
     PreparedStatement stmt2 = null;
     ResultSet rs2 = null;
     
@@ -65,4 +52,6 @@
 	} else {
         System.out.println("수정 실패");      
     }
+    // 자원반납
+    conn.close();
 %>

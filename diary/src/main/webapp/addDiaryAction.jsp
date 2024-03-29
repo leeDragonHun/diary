@@ -4,6 +4,13 @@
 <%
 	System.out.println("==========addDiaryAction.jsp==========");
 
+    String loginMember = (String)(session.getAttribute("loginMember"));
+    if(loginMember == null){ // 즉, 로그오프 상태면.
+        response.sendRedirect("/diary/diary.jsp");
+        return; 
+    // 밑으로 원래 DB방식의 로그인 방식을 쓸 때 쓰던 인증우회문이 있으나 return;을 통해 끝내버림.
+    }
+
 	// post방식으로 받은 값 UTF-8로 인코딩 설정
 	request.setCharacterEncoding("UTF-8");
 	
@@ -25,29 +32,13 @@
 	conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "java1234");
 	
 	// DB로 사용할 것 선언
-	String sql1 = "select my_session mySession from login"; // 로그인 on/off 확인, 별칭사용
 	String sql2 = "INSERT INTO diary VALUES (?, ?, ?, ?, NOW(), NOW())"; // diary 새글 작성
-	PreparedStatement stmt1 = null;
 	PreparedStatement stmt2 = null;
-	ResultSet rs1 = null;
 	ResultSet rs2 = null;
 	
 	// SQL에 값 넣을 준비
-	stmt1 = conn.prepareStatement(sql1);
 	stmt2 = conn.prepareStatement(sql2);
 	
-	//로그인 인증 우회 처리 준비
-	rs1 = stmt1.executeQuery(); // ResultSet의 결과 불러오기
-	String mySession = null; // rs1 실행문에 들어갈 변수 선언
-	if(rs1.next()){ // rs1실행, 즉 로그인분기문 쿼리 실행(실행되면의 조건을 아래 기입)
-		mySession = rs1.getString("mySession"); // String mySession에 db에서 불러온 my_session 값 넣기
-	}
-	
-	//로그인 인증 우회 처리 실행
-	if(mySession.equals("OFF")) {
-		response.sendRedirect("/diary/diary.jsp");
-		return; // 인증 우회로 접속하였기 때문에 코드 진행을 더이상 못 하게 해준 것이다.
-	}	
 	
 	// SQL2에 값 넣기
 	stmt2.setString(1, diaryDate);

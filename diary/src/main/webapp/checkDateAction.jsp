@@ -3,28 +3,18 @@
 
 <%
 	System.out.println("==========checkDateAction.jsp==========");
-	// 0. 로그인(인증) 분기
-	// db이름.테이블이름.컬럼이름
-	// diary.login.my_session => 'OFF' => redirect("loginForm.jsp")
+    
+    String loginMember = (String)(session.getAttribute("loginMember"));
+    if(loginMember == null){ // 즉, 로그오프 상태면.
+        response.sendRedirect("/diary/diary.jsp");
+        return; 
+    // 밑으로 원래 DB방식의 로그인 방식을 쓸 때 쓰던 인증우회문이 있으나 return;을 통해 끝내버림.
+    }
 
-	String sql1 = "select my_session mySession from login"; // 알리어스 (별칭) 사용
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = null;
-	PreparedStatement stmt1 = null;
-	ResultSet rs1 = null;
 	conn = DriverManager.getConnection(
 			"jdbc:mariadb://127.0.0.1:3306/diary", "root", "java1234");
-	stmt1 = conn.prepareStatement(sql1);
-	rs1 = stmt1.executeQuery();
-	String mySession = null;
-	if(rs1.next()) {
-		mySession = rs1.getString("mySession");
-	}
-	// diary.login.my_session => 'OFF' => redirect("loginForm.jsp")
-	if(mySession.equals("OFF")) { // off일시 로그인 하라고 loginForm으로 보내기.
-		response.sendRedirect("/diary/diary.jsp");
-		return;
-	}
 	
 	// 값을 체크하는 코드
 	String checkDate = request.getParameter("checkDate");
@@ -43,4 +33,7 @@
 		//  이날짜 일기 기록 가능
 		response.sendRedirect("/diary/addDiaryForm.jsp?checkDate="+checkDate+"&ck=T");
 	}
+    
+	// 자원반납
+	conn.close();
 %>

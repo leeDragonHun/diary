@@ -2,30 +2,21 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="java.net.*"%>
 <%
-	// 0. 로그인(인증) 분기
-	// diary.login.my_session => 'OFF' => redirect("loginForm.jsp")
+    System.out.println("==========diaryList.jsp==========");
+
+    String loginMember = (String)(session.getAttribute("loginMember"));
+    if(loginMember == null){ // 즉, 로그오프 상태면.
+        response.sendRedirect("/diary/diary.jsp");
+        return; 
+    // 밑으로 원래 DB방식의 로그인 방식을 쓸 때 쓰던 인증우회문이 있으나 return;을 통해 끝내버림.
+    }
+
 	
-	String sql1 = "select my_session mySession from login";
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = null;
-	PreparedStatement stmt1 = null;
-	ResultSet rs1 = null;
 	conn = DriverManager.getConnection(
 			"jdbc:mariadb://127.0.0.1:3306/diary", "root", "java1234");
-	stmt1 = conn.prepareStatement(sql1);
-	rs1 = stmt1.executeQuery();
-	String mySession = null;
-	if(rs1.next()) {
-		mySession = rs1.getString("mySession");
-	}
-	// diary.login.my_session => 'OFF' => redirect("loginForm.jsp")
-	if(mySession.equals("OFF")) {
-		String errMsg = URLEncoder.encode("잘못된 접근 입니다. 로그인 먼저 해주세요", "utf-8");
-		response.sendRedirect("/diary/loginForm.jsp?errMsg="+errMsg);
-		return; // 코드 진행을 끝내는 문법 ex) 메서드 끝낼때 return사용
-	}
-%>	
-<%
+
 	// 출력 리스트 모듈
 	int currentPage = 1;
     System.out.println("currentPage : " + currentPage);
@@ -298,3 +289,7 @@
 </div>    
 </body>
 </html>
+<%
+    // 자원반납
+    conn.close();
+%>

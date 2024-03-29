@@ -4,28 +4,20 @@
 <%
 	System.out.println("==========vote.jsp==========");
 
+
+    String loginMember = (String)(session.getAttribute("loginMember"));
+    if(loginMember == null){ // 즉, 로그오프 상태면.
+        response.sendRedirect("/diary/diary.jsp");
+        return; 
+    }
+
     // 인증 우회 처리
-	String sql1 = "select my_session mySession from login";
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = null;
-	PreparedStatement stmt1 = null;
-	ResultSet rs1 = null;
 	conn = DriverManager.getConnection(
 			"jdbc:mariadb://127.0.0.1:3306/diary", "root", "java1234");
-	stmt1 = conn.prepareStatement(sql1);
-	rs1 = stmt1.executeQuery();
-	String mySession = null;
-	if(rs1.next()) {
-		mySession = rs1.getString("mySession");
-	}
-	// 로그인 off 시 diary.jsp로 가기
-	if(mySession.equals("OFF")) {
-		response.sendRedirect("/diary/diary.jsp");
-		return; // 코드 진행을 끝내는 문법 ex) 메서드 끝낼때 return사용
-	}
-%>
-<%
-    String checkDate = request.getParameter("checkDate");
+
+	String checkDate = request.getParameter("checkDate");
     if(checkDate == null) {
         checkDate = ""; // 날짜에 null이 아니고 공백넣기위함
     }
@@ -96,6 +88,12 @@
         position: absolute;
         top: 5px;
         left : 5px;
+    }
+    
+    .ab-r{
+        position: absolute;
+        top: 5px;
+        right : 5px;
     }
     
     .homeBtn{
@@ -252,7 +250,9 @@
     <button type="button" class="homeBtn" onclick="location.href='/diary/diary.jsp'"></button>
     <button type="button" class="calBtn" onclick="location.href='/diary/diaryCalendar.jsp'"></button>
     <button type="button" class="listBtn" onclick="location.href='/diary/diaryList.jsp'"></button>
-    <button type="button" class="voteBtn" onclick="location.href='/diary/vote.jsp'"></button>
+    <button type="button" class="voteBtn" onclick="location.href='/diary/voteForm.jsp'"></button>
+</div>
+<div class="ab-r">
     <button type="button" class="outBtn" onclick="location.href='/diary/logout.jsp'"></button>
 </div>
     
@@ -406,3 +406,7 @@
     </div>
 </body>
 </html>
+<%
+    // 자원반납
+    conn.close();
+%>

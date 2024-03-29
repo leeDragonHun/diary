@@ -4,28 +4,19 @@
 <%@ page import = "java.util.*" %>
 <%
 	System.out.println("==========diaryCalendar.jsp==========");
+
+    String loginMember = (String)(session.getAttribute("loginMember"));
+    if(loginMember == null){ // 즉, 로그오프 상태면.
+        response.sendRedirect("/diary/diary.jsp");
+        return; 
+    // 밑으로 원래 DB방식의 로그인 방식을 쓸 때 쓰던 인증우회문이 있으나 return;을 통해 끝내버림.
+    }   
+
 	// DB 연동 관련
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = null;
-	PreparedStatement stmt1 = null;
-	ResultSet rs1 = null;
 	conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "java1234");
 
-	// DB 사용 준비
-	String sql1 = "select my_session mySession from login";
-	stmt1 = conn.prepareStatement(sql1);
-	rs1 = stmt1.executeQuery();	
-	String mySession = null;
-	if(rs1.next()){
-		mySession = rs1.getString("mySession");
-	}
-	
-	if(mySession.equals("OFF")) {
-		response.sendRedirect("/diary/diary.jsp");
-		return;
-	}
-%>
-<%
 	// 24년 3월 25일이 오늘인 것으로 설명된 주석임.
 	
 	// 타겟 년, 월
@@ -343,3 +334,7 @@
 		</div>
 </body>
 </html>
+<%
+    // 자원반납
+    conn.close();
+%>
