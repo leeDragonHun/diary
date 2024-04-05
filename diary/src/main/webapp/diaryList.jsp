@@ -30,7 +30,7 @@
 	}
 	*/
 	
-	int startRow = (currentPage-1)*rowPerPage; // 1-0, 2-10, 3-20, 4-30,....
+	int startRow = (currentPage-1)*rowPerPage; // currentPage 가1 페이지일때  시작 인덱스 글이 0번째 놈, 2-10, 3-20, 4-30,....
 	
 	String searchWord = "";
 	if(request.getParameter("searchWord") != null) {
