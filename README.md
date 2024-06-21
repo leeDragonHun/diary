@@ -1,5 +1,5 @@
 
-# [Diary](http://52.79.169.153/diary/diary.jsp)
+# Diary [바로가기](http://52.79.169.153/diary/diary.jsp)
 
 ## 🖥️ 프로젝트 소개
 
